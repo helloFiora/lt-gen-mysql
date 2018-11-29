@@ -1,0 +1,51 @@
+package ${package}.models#if(${prefix}).${prefix}#end;
+
+import io.ebean.Finder;
+import io.ebean.Model;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+#foreach ($column in $columns)
+#if($column.attrType == 'Date')
+import java.util.Date;
+#break
+#end
+#end
+
+
+/**
+ * 功能概要：${tableComment}表 ${tableName}
+ *
+ * @author ${author}
+ * @since ${datetime}
+ */
+@Entity
+@Table(name="${tableName}")
+public class ${className} extends Model {
+
+
+#foreach ($column in $columns)
+	/** $column.columnComment */
+#if($column.columnName != $primaryKey.columnName)
+#if(!$column.isNullable)
+	@NotNull
+#end
+#else
+	@Id
+#end
+	private $column.attrType $column.attrname;
+#end
+
+    public static final Finder<String, ${className}> find = new Finder<String, ${className}>(${className}.class);
+
+#foreach ($column in $columns)
+	public void set${column.attrName}($column.attrType $column.attrname) {
+		this.$column.attrname = $column.attrname;
+	}
+
+	public $column.attrType get${column.attrName}() {
+		return $column.attrname;
+	}
+#end
+
+}
