@@ -102,6 +102,9 @@ public class GenUtils
         templates.add("vm/java/ebean-domain.java.vm");
         templates.add("vm/java/form.java.vm");
         templates.add("vm/java/dto.java.vm");
+        templates.add("vm/java/ebean-action.java.vm");
+        templates.add("vm/java/ebean-service.java.vm");
+        templates.add("vm/java/ebean-daoimpl.java.vm");
 //        templates.add("vm/java/domain.java.vm");
 //        templates.add("vm/java/Mapper.java.vm");
 //        templates.add("vm/java/Service.java.vm");
@@ -141,8 +144,8 @@ public class GenUtils
         // 大写类名
         String className = table.getClassName();
         String javaPath = PROJECT_PATH;
-        String mybatisPath = MYBATIS_PATH + "/" + moduleName + "/" + className;
-        String htmlPath = TEMPLATES_PATH + "/" + moduleName + "/" + classname;
+//        String mybatisPath = MYBATIS_PATH + "/" + moduleName + "/" + className;
+//        String htmlPath = TEMPLATES_PATH + "/" + moduleName + "/" + classname;
         String prefix  = getPrefix(table.getTableName());
         
         if (template.contains("ebean-domain.java.vm")) {
@@ -154,7 +157,15 @@ public class GenUtils
         if (template.contains("form.java.vm")) {
             return javaPath + "form" + "/" + prefix + "/" + className + "Form.java";
         }
-        
+        if (template.contains("ebean-action.java.vm")) {
+            return javaPath + "action" + "/" + prefix + "/" + className + "Action.java";
+        }
+        if (template.contains("ebean-service.java.vm")) {
+        	return javaPath + "service" + "/" + prefix + "/" + className + "Service.java";
+        }
+        if (template.contains("ebean-daoimpl.java.vm")) {
+        	return javaPath + "dao" + "/" + prefix + "/" + className + "DaoImpl.java";
+        }
         
 //        if (template.contains("domain.java.vm"))
 //        {

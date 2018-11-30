@@ -1,0 +1,137 @@
+package ${package}.action#if(${prefix}).${prefix}#end;
+
+import play.api.rest.Rest;
+import play.data.DataFactory;
+import play.data.DynamicForm;
+import play.data.Validations;
+import play.data.ErrCode;
+import play.data.Form;
+import play.libs.F;
+import play.libs.concurrent.Promise;
+import play.mvc.Controller;
+import play.mvc.Result;
+import play.data.Paging;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import ${package}.service#if(${prefix}).${prefix}#end.${className}Service;
+import ${package}.form#if(${prefix}).${prefix}#end.${className}Form;
+import ${package}.dto#if(${prefix}).${prefix}#end.${className}Dto;
+
+/**
+ * ${tableComment} 控制层实现
+ * 
+ * @author ${author}
+ * @date ${datetime}
+ */
+@Singleton
+public class ${className}Action extends Controller {
+	
+	@Inject
+    private DataFactory data;
+	@Inject
+	private ${className}Service ${classname}Service;
+
+	/**
+     * 查询${tableComment}信息
+     * 
+     * @return ${tableComment}信息
+     */
+	public Result findById() {
+	    DynamicForm dForm = data.form().bindFromRequest();
+	    //验证
+        Validations.required(dForm, "id");
+        if(dForm.hasErrors()){
+            return data.bad(dForm);
+        }
+
+        F.Either<${className}Dto, ErrCode> result =  ${classname}Service.findById(#if(${primaryKey.attrType} != 'String')Integer.parseInt(dForm.get("id"))#else dForm.get("id")#end);
+
+        if (result.right.isPresent()){
+            return data.bad(result.right.get());
+        }
+        return data.ok(result);
+	}
+	
+	/**
+     * 查询${tableComment} 分页信息
+     * 
+     * @return ${tableComment}信息
+     */
+	public Result page${className}() {
+	    Form<${className}Form> dForm = data.form(${className}Form.class).bindFromRequest();
+        if(dForm.hasErrors()){
+            return data.bad(dForm);
+        }
+
+        F.Either<Paging<${className}Dto>, ErrCode> result =  ${classname}Service.page${className}(dForm.get());
+
+        if (result.right.isPresent()){
+            return data.bad(result.right.get());
+        }
+        return data.ok(result);
+	}
+	
+	/**
+     * ${tableComment} 删除
+     * 
+     * @return ${tableComment}信息
+     */
+	public Result del${className}()	{
+	    DynamicForm dForm = data.form().bindFromRequest();
+	    //验证
+        Validations.required(dForm, "id");
+        if(dForm.hasErrors()){
+            return data.bad(dForm);
+        }
+		
+        F.Either<Boolean, ErrCode> result =  ${classname}Service.del${className}(#if(${primaryKey.attrType} != 'String')Integer.parseInt(dForm.get("id"))#else dForm.get("id")#end);
+
+        if (result.right.isPresent()){
+            return data.bad(result.right.get());
+        }
+        return data.ok(result);
+	}
+	
+	/**
+     * ${tableComment} 添加
+     * 
+     * @return ${tableComment}信息
+     */
+	public Result add()	{
+	    Form<${className}Form> dForm = data.form(${className}Form.class).bindFromRequest();
+        if(dForm.hasErrors()){
+            return data.bad(dForm);
+        }
+
+        F.Either<${className}Dto, ErrCode> result =  ${classname}Service.add(dForm.get());
+
+        if (result.right.isPresent()){
+            return data.bad(result.right.get());
+        }
+        return data.ok(result);
+	}
+	
+	/**
+     * ${tableComment} 更新
+     * 
+     * @return ${tableComment}信息
+     */
+	public Result update()	{
+	    Form<${className}Form> dForm = data.form(${className}Form.class).bindFromRequest();
+        if(dForm.hasErrors()){
+            return data.bad(dForm);
+        }
+
+        F.Either<${className}Dto, ErrCode> result =  ${classname}Service.update(dForm.get());
+
+        if (result.right.isPresent()){
+            return data.bad(result.right.get());
+        }
+        return data.ok(result);
+	}
+	
+	
+	
+}

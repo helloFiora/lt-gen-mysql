@@ -1,0 +1,36 @@
+package ${package}.dao#if(${prefix}).${prefix}#end;
+
+import io.ebean.ExpressionList;
+import io.ebean.PagedList;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import ${package}.form#if(${prefix}).${prefix}#end.${className}Form;
+import ${package}.models#if(${prefix}).${prefix}#end.${className};
+
+/**
+ * ${tableComment} 数据层层实现
+ * 
+ * @author ${author}
+ * @date ${datetime}
+ */
+ @Singleton
+public class ${className}DaoImpl{
+	
+	/**
+     * 查询${tableComment} 分页信息
+     * 
+     * @return ${tableComment}信息
+     */
+	public PagedList<${className}> page${className}(${className}Form form) {
+		ExpressionList<${className}> exp = ${className}.find.query().where();
+ 		//TODO 具体查询参数注入
+//        exp.orderBy("${column.attrName} desc");
+        exp.setFirstRow(form.getFirstRow());
+        exp.setMaxRows(form.getMaxRow());
+	    return exp.findPagedList();
+	}
+	
+	
+	
+}

@@ -12,7 +12,6 @@ import java.util.Date;
 #end
 #end
 
-
 /**
  * 功能概要：${tableComment}表 ${tableName}
  *
@@ -22,7 +21,6 @@ import java.util.Date;
 @Entity
 @Table(name="${tableName}")
 public class ${className} extends Model {
-
 
 #foreach ($column in $columns)
 	/** $column.columnComment */
@@ -36,7 +34,7 @@ public class ${className} extends Model {
 	private $column.attrType $column.attrname;
 #end
 
-    public static final Finder<String, ${className}> find = new Finder<String, ${className}>(${className}.class);
+    public static final Finder<${primaryKey.attrType}, ${className}> find = new Finder<${primaryKey.attrType}, ${className}>(${className}.class);
 
 #foreach ($column in $columns)
 	public void set${column.attrName}($column.attrType $column.attrname) {

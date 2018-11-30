@@ -1,0 +1,127 @@
+package ${package}.service#if(${prefix}).${prefix}#end;
+
+import com.google.common.collect.Lists;
+import io.ebean.PagedList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import play.data.ErrCode;
+import play.data.Paging;
+import play.libs.F;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.List;
+
+import ${package}.dao#if(${prefix}).${prefix}#end.${className}DaoImpl;
+import ${package}.form#if(${prefix}).${prefix}#end.${className}Form;
+import ${package}.dto#if(${prefix}).${prefix}#end.${className}Dto;
+import ${package}.models#if(${prefix}).${prefix}#end.${className};
+
+/**
+ * ${tableComment} 服务层层实现
+ * 
+ * @author ${author}
+ * @date ${datetime}
+ */
+ @Singleton
+public class ${className}Service{
+	
+	@Inject
+	private ${className}DaoImpl ${classname}DaoImpl;
+	
+	private Logger logger = LoggerFactory.getLogger(${className}Service.class);
+	
+	/**
+     * 查询${tableComment}信息
+     * 
+     * @param  id
+     * @return ${tableComment}信息
+     */
+	public F.Either<${className}Dto, ErrCode> findById(${primaryKey.attrType} id)	{
+	    
+	    ${className} ${classname} = ${className}.find.byId(id);
+		if(${classname} == null){
+			//对象未找到
+			logger.error("${className}Service根据主键id{}未找到对象",id);
+			return F.Either.Right(ErrCode.NOT_FOUND);
+		}
+	 
+	 	${className}Dto record = new ${className}Dto();
+	 	BeanUtils.copyProperties(record,${classname});
+	  	return F.Either.Left(record);
+	}
+	
+	/**
+     * 查询${tableComment} 分页信息
+     * 
+     * @return ${tableComment}信息
+     */
+	public F.Either<Paging<${className}Dto>, ErrCode> page${className}(${className}Form form) {
+	    PagedList<${className}> pagedList = ${classname}DaoImpl.page${className}(form);
+        if (null == pagedList.getList() || pagedList.getList().size() == 0) {
+            logger.error("${className}Service.page${className}当前条件没有查询到数据");
+            return F.Either.Right(ErrCode.NOT_FOUND);
+        }
+        List<${className}Dto> recordDtos = Lists.newArrayList();
+        ${className}Dto dto = null ;
+        for (${className} record : pagedList.getList()){
+        	dto = new ${className}Dto();
+        	BeanUtils.copyProperties(dto,record);
+        	recordDtos.add(dto);
+        }
+        Paging paging = new Paging(pagedList);
+        paging.setInnerData(recordDtos);
+        return F.Either.Left(paging);
+	}
+	
+	/**
+     * ${tableComment} 删除
+     * 
+     * @param  id
+     * @return ${tableComment}信息
+     */
+	public F.Either<Boolean, ErrCode> del${className}(${primaryKey.attrType} id)	{
+	    ${className}.find.deleteById(id);
+	    return F.Either.Left(true);
+	}
+	
+	/**
+     * ${tableComment} 添加
+     * 
+     * @return ${tableComment}信息
+     */
+	public F.Either<${className}Dto, ErrCode> add(${className}Form form)	{
+		    
+	    ${className} ${classname} = new ${className}();
+#foreach ($column in $columns)
+		${classname}.set${column.attrName}(form.get${column.attrName}());
+#end
+	 	${classname}.save();
+	 
+	 	${className}Dto record = new ${className}Dto();
+	 	BeanUtils.copyProperties(record,${classname});
+	  	return F.Either.Left(record);
+	}
+	
+	/**
+     * ${tableComment} 更新
+     * 
+     * @return ${tableComment}信息
+     */
+	public F.Either<${className}Dto, ErrCode> update(${className}Form form)	{
+		    
+	    ${className} ${classname} = ${className}.find.byId(form.get${primaryKey.attrName}());
+#foreach ($column in $columns)
+		${classname}.set${column.attrName}(form.get${column.attrName}());
+#end
+	 	${classname}.update();
+	 
+	 	${className}Dto record = new ${className}Dto();
+	 	BeanUtils.copyProperties(record,${classname});
+	  	return F.Either.Left(record);
+	}
+	
+	
+	
+}

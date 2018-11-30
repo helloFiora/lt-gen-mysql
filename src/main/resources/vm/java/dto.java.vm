@@ -7,7 +7,6 @@ import java.util.Date;
 #end
 #end
 
-
 /**
  * 功能概要：${tableComment} DTO层
  *
@@ -15,7 +14,6 @@ import java.util.Date;
  * @since ${datetime}
  */
 public class ${className}Dto{
-
 
 #foreach ($column in $columns)
 	/** $column.columnComment */

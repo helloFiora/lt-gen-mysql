@@ -1,6 +1,7 @@
 package ${package}.form#if(${prefix}).${prefix}#end;
 
 import play.data.validation.Constraints;
+import play.data.PageForm;
 #foreach ($column in $columns)
 #if($column.attrType == 'Date')
 import java.util.Date;
@@ -15,8 +16,7 @@ import java.util.Date;
  * @author ${author}
  * @since ${datetime}
  */
-public class ${className}Form {
-
+public class ${className}Form extends PageForm{
 
 #foreach ($column in $columns)
 	/** $column.columnComment */

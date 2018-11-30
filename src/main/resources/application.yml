@@ -65,7 +65,7 @@ spring:
   devtools:
     restart:
       # 热部署开关
-      enabled: false
+      enabled: true
 shiro:
   user:
     # 登录地址
