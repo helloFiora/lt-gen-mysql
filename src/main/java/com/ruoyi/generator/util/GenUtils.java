@@ -20,7 +20,7 @@ import com.ruoyi.generator.domain.TableInfo;
 public class GenUtils
 {
     /** 项目空间路径 */
-    private static final String PROJECT_PATH = getProjectPath();
+//    private static final String PROJECT_PATH = getProjectPath();
 
     /** mybatis空间路径 */
     private static final String MYBATIS_PATH = "main/resources/mapper";
@@ -56,14 +56,16 @@ public class GenUtils
 
     /**
      * 获取模板信息
+     * @param author 
+     * @param webPackageName 前端输入的包名
      * 
      * @return 模板列表
      */
-    public static VelocityContext getVelocityContext(TableInfo table)
+    public static VelocityContext getVelocityContext(TableInfo table, String author, String packageName)
     {
         // java对象数据传递到模板文件vm
         VelocityContext velocityContext = new VelocityContext();
-        String packageName = Global.getPackageName();
+//        String packageName = Global.getPackageName();
         velocityContext.put("tableName", table.getTableName());
         velocityContext.put("tableComment", replaceKeyword(table.getTableComment()));
         velocityContext.put("primaryKey", table.getPrimaryKey());
@@ -73,7 +75,7 @@ public class GenUtils
         velocityContext.put("columns", table.getColumns());
         velocityContext.put("basePackage", getBasePackage(packageName));
         velocityContext.put("package", packageName);
-        velocityContext.put("author", Global.getAuthor());
+        velocityContext.put("author", StringUtils.isBlank(author)?Global.getAuthor():author);
         velocityContext.put("datetime", DateUtils.getDate());
         velocityContext.put("prefix", getPrefix(table.getTableName()));
         return velocityContext;
@@ -137,13 +139,13 @@ public class GenUtils
     /**
      * 获取文件名
      */
-    public static String getFileName(String template, TableInfo table, String moduleName)
+    public static String getFileName(String template, TableInfo table, String moduleName,String packageName)
     {
         // 小写类名
         String classname = table.getClassname();
         // 大写类名
         String className = table.getClassName();
-        String javaPath = PROJECT_PATH;
+        String javaPath = getProjectPath(packageName);
 //        String mybatisPath = MYBATIS_PATH + "/" + moduleName + "/" + className;
 //        String htmlPath = TEMPLATES_PATH + "/" + moduleName + "/" + classname;
         String prefix  = getPrefix(table.getTableName());
@@ -237,9 +239,9 @@ public class GenUtils
         return basePackage;
     }
 
-    public static String getProjectPath()
+    public static String getProjectPath(String packageName)
     {
-        String packageName = Global.getPackageName();
+//        String packageName = Global.getPackageName();
         StringBuffer projectPath = new StringBuffer();
      //   projectPath.append("main/java/");
         projectPath.append(packageName.replace(".", "/"));

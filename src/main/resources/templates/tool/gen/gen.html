@@ -35,6 +35,15 @@
 				<a class="btn btn-success" onclick="javascript:batchGenCode()" shiro:hasPermission="tool:gen:code">
 			        <i class="fa fa-download"></i> 批量生成
 			    </a>
+			    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			     作者：<b id="author" th:text="${author}" ></b>
+			    <a class="btn btn-success" onclick="javascript:resetAuthor()" >
+			        <i class="fa fa-download"></i> 修改作者
+			    </a>
+			     &nbsp;&nbsp;&nbsp;包名：<b id="packageName" th:text="${packageName}" ></b>
+			    <a class="btn btn-success" onclick="javascript:resetPackageName()" >
+			        <i class="fa fa-download"></i> 修改包名
+			    </a>
 		    </div>
 		
 		    <div class="col-sm-12 select-table table-striped">
@@ -47,6 +56,14 @@
 		var prefix = ctx + "tool/gen";
 	
 		$(function() {
+			var author = localStorage.getItem('author');
+			var packageName = localStorage.getItem('packageName');
+			if(author != null){
+				$("#author").text(author);
+			}
+			if(packageName != null){
+				$("#packageName").text(packageName);
+			}
 		    var options = {
 		        url: prefix + "/list",
 		        sortName: "createTime",
@@ -95,11 +112,21 @@
 		// 生成代码
 		function genCode(tableName) {
 		    $.modal.confirm("确定要生成" + tableName + "表代码吗？", function() {
-		        location.href = prefix + "/genCode/" + tableName;
+		    	var url  = prefix + "/genCode/" + tableName ;
+		    	var author = localStorage.getItem('author');
+		    	if(author != null){
+		    		url += "&author="+author;
+		    	}
+		    	var packageName = localStorage.getItem('packageName');
+		    	if(packageName != null){
+		    		url += "&packageName="+packageName;
+		    	}
+		    	
+		        location.href = url;
 		        layer.msg('执行成功,正在生成代码请稍后…', { icon: 1 });
 		    })
 		}
-	
+		
 		//批量生成代码
 		function batchGenCode() {
 		    var rows = $.table.selectColumns("tableName");
@@ -108,9 +135,33 @@
 		        return;
 		    }
 		    $.modal.confirm("确认要生成选中的" + rows.length + "条数据吗?", function() {
-		        location.href = prefix + "/batchGenCode?tables=" + rows;
+		    	var url  = prefix + "/batchGenCode?tables=" + rows ;
+		    	var author = localStorage.getItem('author');
+		    	if(author != null){
+		    		url += "&author="+author;
+		    	}
+		    	var packageName = localStorage.getItem('packageName');
+		    	if(packageName != null){
+		    		url += "&packageName="+packageName;
+		    	}
+		    	
+		        location.href = url;
 		        layer.msg('执行成功,正在生成代码请稍后…', { icon: 1 });
 		    });
+		}
+		function resetAuthor(){
+			var author=prompt("请输入新作者名字！！！");
+			if(author != null && author != ""){
+				$("#author").text(author);
+				localStorage.setItem('author',author);
+			}
+		}
+		function resetPackageName(){
+			var packageName=prompt("请输入新包名！！！（譬如：包类全名com.walletpay.action.walletpay.pswAction，只需输入com.walletpay即可）");
+			if(packageName != null && packageName != ""){
+				$("#packageName").text(packageName);
+				localStorage.setItem('packageName',packageName);
+			}
 		}
 	</script>
 </body>

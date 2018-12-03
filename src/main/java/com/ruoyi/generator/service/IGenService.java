@@ -22,15 +22,19 @@ public interface IGenService
      * 生成代码
      * 
      * @param tableName 表名称
+     * @param author 作者
+     * @param packageName 
      * @return 数据
      */
-    public byte[] generatorCode(String tableName);
+    public byte[] generatorCode(String tableName, String author, String packageName);
 
     /**
      * 批量生成代码
      * 
      * @param tableNames 表数组
+     * @param author 作者
+     * @param packageName 
      * @return 数据
      */
-    public byte[] generatorCode(String[] tableNames);
+    public byte[] generatorCode(String[] tableNames,String author, String packageName);
 }

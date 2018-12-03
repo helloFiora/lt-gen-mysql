@@ -6,12 +6,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.ruoyi.common.annotation.Log;
+import com.ruoyi.common.config.Global;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.support.Convert;
 import com.ruoyi.framework.web.page.TableDataInfo;
@@ -34,8 +36,10 @@ public class GenController extends BaseController
     private IGenService genService;
 
     @GetMapping()
-    public String gen()
+    public String gen(ModelMap mmap)
     {
+    	mmap.put("author", Global.getAuthor());
+    	mmap.put("packageName", Global.getPackageName());
         return prefix + "/gen";
     }
 
@@ -53,9 +57,9 @@ public class GenController extends BaseController
      */
     @Log(title = "代码生成", businessType = BusinessType.GENCODE)
     @GetMapping("/genCode/{tableName}")
-    public void genCode(HttpServletResponse response, @PathVariable("tableName") String tableName) throws IOException
+    public void genCode(HttpServletResponse response, @PathVariable("tableName") String tableName,String author,String packageName) throws IOException
     {
-        byte[] data = genService.generatorCode(tableName);
+        byte[] data = genService.generatorCode(tableName,author,packageName);
         response.reset();
         response.setHeader("Content-Disposition", "attachment; filename=\"table.zip\"");
         response.addHeader("Content-Length", "" + data.length);
@@ -70,10 +74,10 @@ public class GenController extends BaseController
     @Log(title = "代码生成", businessType = BusinessType.GENCODE)
     @GetMapping("/batchGenCode")
     @ResponseBody
-    public void batchGenCode(HttpServletResponse response, String tables) throws IOException
+    public void batchGenCode(HttpServletResponse response, String tables,String author,String packageName) throws IOException
     {
         String[] tableNames = Convert.toStrArray(tables);
-        byte[] data = genService.generatorCode(tableNames);
+        byte[] data = genService.generatorCode(tableNames,author,packageName);
         response.reset();
         response.setHeader("Content-Disposition", "attachment; filename=\"tables.zip\"");
         response.addHeader("Content-Length", "" + data.length);
