@@ -18,12 +18,8 @@ import com.ruoyi.common.utils.YamlUtil;
  * 
  * @author ruoyi
  */
-@Configuration
-@PropertySource("classpath:application.yml")
 public class Global
 {
-	@Autowired
-	private Environment env ;
     private static final Logger log = LoggerFactory.getLogger(Global.class);
 
     private static String NAME = "application.yml";
