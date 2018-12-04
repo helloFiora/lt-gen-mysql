@@ -24,9 +24,10 @@ public interface IGenService
      * @param tableName 表名称
      * @param author 作者
      * @param packageName 
+     * @param prefix 
      * @return 数据
      */
-    public byte[] generatorCode(String tableName, String author, String packageName);
+    public byte[] generatorCode(String tableName, String author, String packageName, String prefix);
 
     /**
      * 批量生成代码
@@ -34,7 +35,8 @@ public interface IGenService
      * @param tableNames 表数组
      * @param author 作者
      * @param packageName 
+     * @param prefix 
      * @return 数据
      */
-    public byte[] generatorCode(String[] tableNames,String author, String packageName);
+    public byte[] generatorCode(String[] tableNames,String author, String packageName, String prefix);
 }

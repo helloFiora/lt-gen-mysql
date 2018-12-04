@@ -57,9 +57,9 @@ public class GenController extends BaseController
      */
     @Log(title = "代码生成", businessType = BusinessType.GENCODE)
     @GetMapping("/genCode/{tableName}")
-    public void genCode(HttpServletResponse response, @PathVariable("tableName") String tableName,String author,String packageName) throws IOException
+    public void genCode(HttpServletResponse response, @PathVariable("tableName") String tableName,String author,String packageName,String prefix) throws IOException
     {
-        byte[] data = genService.generatorCode(tableName,author,packageName);
+        byte[] data = genService.generatorCode(tableName,author,packageName,prefix);
         response.reset();
         response.setHeader("Content-Disposition", "attachment; filename=\"table.zip\"");
         response.addHeader("Content-Length", "" + data.length);
@@ -74,10 +74,10 @@ public class GenController extends BaseController
     @Log(title = "代码生成", businessType = BusinessType.GENCODE)
     @GetMapping("/batchGenCode")
     @ResponseBody
-    public void batchGenCode(HttpServletResponse response, String tables,String author,String packageName) throws IOException
+    public void batchGenCode(HttpServletResponse response, String tables,String author,String packageName,String prefix) throws IOException
     {
         String[] tableNames = Convert.toStrArray(tables);
-        byte[] data = genService.generatorCode(tableNames,author,packageName);
+        byte[] data = genService.generatorCode(tableNames,author,packageName,prefix);
         response.reset();
         response.setHeader("Content-Disposition", "attachment; filename=\"tables.zip\"");
         response.addHeader("Content-Length", "" + data.length);

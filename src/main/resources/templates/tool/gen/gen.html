@@ -47,6 +47,10 @@
 			    <a class="btn btn-success" onclick="javascript:resetPackageName()" >
 			        <i class="fa fa-download"></i> 修改包名
 			    </a>
+			     &nbsp;&nbsp;&nbsp;包名：<b id="prefix" th:text="默认为表前缀" ></b>
+			    <a class="btn btn-success" onclick="javascript:resetPrefix()" >
+			        <i class="fa fa-download"></i> 修改模块前缀
+			    </a>
 		    </div>
 		
 		    <div class="col-sm-12 select-table table-striped">
@@ -56,19 +60,23 @@
 	</div>
 	<div th:include="include :: footer"></div>
 	<script type="text/javascript">
-		var prefix = ctx + "tool/gen";
+		var prefixUrl = ctx + "tool/gen";
 	
 		$(function() {
 			var author = localStorage.getItem('author');
 			var packageName = localStorage.getItem('packageName');
-			if(author != null){
+			var prefix = localStorage.getItem('prefix');
+			if(author != null && author != ""){
 				$("#author").text(author);
 			}
-			if(packageName != null){
+			if(packageName != null && packageName != ""){
 				$("#packageName").text(packageName);
 			}
+			if(prefix != null && prefix != ""){
+				$("#prefix").text(prefix);
+			}
 		    var options = {
-		        url: prefix + "/list",
+		        url: prefixUrl + "/list",
 		        sortName: "createTime",
 		        sortOrder: "desc",
 		        search: false,
@@ -115,17 +123,8 @@
 		// 生成代码
 		function genCode(tableName) {
 		    $.modal.confirm("确定要生成" + tableName + "表代码吗？", function() {
-		    	var url  = prefix + "/genCode/" + tableName ;
-		    	var author = localStorage.getItem('author');
-		    	if(author != null){
-		    		url += "&author="+author;
-		    	}
-		    	var packageName = localStorage.getItem('packageName');
-		    	if(packageName != null){
-		    		url += "&packageName="+packageName;
-		    	}
-		    	
-		        location.href = url;
+		    	var url  = prefixUrl + "/genCode/" + tableName ;
+		        location.href = urlSplice(url);
 		        layer.msg('执行成功,正在生成代码请稍后…', { icon: 1 });
 		    })
 		}
@@ -138,33 +137,54 @@
 		        return;
 		    }
 		    $.modal.confirm("确认要生成选中的" + rows.length + "条数据吗?", function() {
-		    	var url  = prefix + "/batchGenCode?tables=" + rows ;
-		    	var author = localStorage.getItem('author');
-		    	if(author != null){
-		    		url += "&author="+author;
-		    	}
-		    	var packageName = localStorage.getItem('packageName');
-		    	if(packageName != null){
-		    		url += "&packageName="+packageName;
-		    	}
-		    	
-		        location.href = url;
+		    	var url  = prefixUrl + "/batchGenCode?tables=" + rows ;
+		    	location.href = urlSplice(url);
 		        layer.msg('执行成功,正在生成代码请稍后…', { icon: 1 });
 		    });
 		}
 		function resetAuthor(){
+			//点击取消，author 为null , 不输入点击确定  author 为 “”;
+			// null 和 空字符串 都不会提交到后台
 			var author=prompt("请输入新作者名字！！！");
-			if(author != null && author != ""){
+			if(author != null){
 				$("#author").text(author);
 				localStorage.setItem('author',author);
+				location.reload();
 			}
 		}
 		function resetPackageName(){
-			var packageName=prompt("请输入新包名！！！（譬如：包类全名com.walletpay.action.walletpay.pswAction，只需输入com.walletpay即可）");
-			if(packageName != null && packageName != ""){
+			var packageName=prompt("请输入新包名！！！（譬如：包类全名com.walletpay.action.admin.pswAction，只需输入com.walletpay即可）");
+			if(packageName != null ){
 				$("#packageName").text(packageName);
 				localStorage.setItem('packageName',packageName);
+				location.reload();
 			}
+		}
+		function resetPrefix(){
+			var prefix=prompt("请输入模块前缀！！！（譬如：包类全名com.walletpay.action.admin.pswAction，只需输入admin即可）");
+			if(prefix != null){
+				$("#prefix").text(prefix);
+				localStorage.setItem('prefix',prefix);
+				location.reload();
+			}
+		}
+		function urlSplice(url){
+    		url = spliceLocalParam(url,'author');
+    		url = spliceLocalParam(url,'packageName');
+    		url = spliceLocalParam(url,'prefix');
+	    	return url;
+		}
+		function spliceLocalParam(url,key){
+			var value = localStorage.getItem(key);
+			if(value != null && value != ""){
+				if(url.indexOf("?") == -1){
+				//url 首个参数
+					url = url + "?"+key+"="+value;
+				}else{
+					url = url + "&"+key+"="+value;
+				}
+	    	}
+			return url;
 		}
 	</script>
 </body>

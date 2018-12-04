@@ -61,7 +61,7 @@ public class GenUtils
      * 
      * @return 模板列表
      */
-    public static VelocityContext getVelocityContext(TableInfo table, String author, String packageName)
+    public static VelocityContext getVelocityContext(TableInfo table, String author, String packageName,String inputPrefix)
     {
         // java对象数据传递到模板文件vm
         VelocityContext velocityContext = new VelocityContext();
@@ -77,7 +77,7 @@ public class GenUtils
         velocityContext.put("package", packageName);
         velocityContext.put("author", StringUtils.isBlank(author)?Global.getAuthor():author);
         velocityContext.put("datetime", DateUtils.getDate());
-        velocityContext.put("prefix", getPrefix(table.getTableName()));
+        velocityContext.put("prefix", getPrefix(table.getTableName(),inputPrefix));
         return velocityContext;
     }
     
@@ -86,7 +86,10 @@ public class GenUtils
      * @param tableName
      * @return
      */
-    private static String getPrefix(String tableName) {
+    private static String getPrefix(String tableName,String inputPrefix) {
+    	if(!StringUtils.isBlank(inputPrefix)) {
+    		return inputPrefix;
+    	}
     	if(tableName.indexOf("_") != -1) {
     		return tableName.substring(0,tableName.indexOf("_"));
     	}
@@ -139,7 +142,7 @@ public class GenUtils
     /**
      * 获取文件名
      */
-    public static String getFileName(String template, TableInfo table, String moduleName,String packageName)
+    public static String getFileName(String template, TableInfo table, String moduleName,String packageName,String prefix)
     {
         // 小写类名
         String classname = table.getClassname();
@@ -148,7 +151,7 @@ public class GenUtils
         String javaPath = getProjectPath(packageName);
 //        String mybatisPath = MYBATIS_PATH + "/" + moduleName + "/" + className;
 //        String htmlPath = TEMPLATES_PATH + "/" + moduleName + "/" + classname;
-        String prefix  = getPrefix(table.getTableName());
+        prefix  = getPrefix(table.getTableName(),prefix);
         
         if (template.contains("ebean-domain.java.vm")) {
             return javaPath + "domain" + "/" + prefix + "/" + className + ".java";

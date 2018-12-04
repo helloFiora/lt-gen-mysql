@@ -58,7 +58,7 @@ public class GenServiceImpl implements IGenService
      * @return 数据
      */
     @Override
-    public byte[] generatorCode(String tableName,String author,String packageName)
+    public byte[] generatorCode(String tableName,String author,String packageName,String prefix)
     {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ZipOutputStream zip = new ZipOutputStream(outputStream);
@@ -67,7 +67,7 @@ public class GenServiceImpl implements IGenService
         // 查询列信息
         List<ColumnInfo> columns = genMapper.selectTableColumnsByName(tableName);
         // 生成代码
-        generatorCode(table, columns, zip,author,packageName);
+        generatorCode(table, columns, zip,author,packageName,prefix);
         IOUtils.closeQuietly(zip);
         return outputStream.toByteArray();
     }
@@ -81,7 +81,7 @@ public class GenServiceImpl implements IGenService
      * @return 数据
      */
     @Override
-    public byte[] generatorCode(String[] tableNames,String author,String packageName)
+    public byte[] generatorCode(String[] tableNames,String author,String packageName,String prefix)
     {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ZipOutputStream zip = new ZipOutputStream(outputStream);
@@ -92,7 +92,7 @@ public class GenServiceImpl implements IGenService
             // 查询列信息
             List<ColumnInfo> columns = genMapper.selectTableColumnsByName(tableName);
             // 生成代码
-            generatorCode(table, columns, zip,author,packageName);
+            generatorCode(table, columns, zip,author,packageName,prefix);
         }
         IOUtils.closeQuietly(zip);
         return outputStream.toByteArray();
@@ -101,9 +101,10 @@ public class GenServiceImpl implements IGenService
     /**
      * 生成代码
      * @param author 
+     * @param prefix 
      * @param packageName2 
      */
-    public void generatorCode(TableInfo table, List<ColumnInfo> columns, ZipOutputStream zip, String author, String inputPackageName)
+    public void generatorCode(TableInfo table, List<ColumnInfo> columns, ZipOutputStream zip, String author, String inputPackageName, String prefix)
     {
         // 表名转换成Java属性名
         String className = GenUtils.tableToJava(table.getTableName());
@@ -119,7 +120,7 @@ public class GenServiceImpl implements IGenService
         String packageName = getPackageName(inputPackageName);
         String moduleName = GenUtils.getModuleName(packageName);
 
-        VelocityContext context = GenUtils.getVelocityContext(table,author,packageName);
+        VelocityContext context = GenUtils.getVelocityContext(table,author,packageName,prefix);
 
         // 获取模板列表
         List<String> templates = GenUtils.getTemplates();
@@ -132,7 +133,7 @@ public class GenServiceImpl implements IGenService
             try
             {
                 // 添加到zip
-                zip.putNextEntry(new ZipEntry(GenUtils.getFileName(template, table, moduleName,packageName)));
+                zip.putNextEntry(new ZipEntry(GenUtils.getFileName(template, table, moduleName,packageName,prefix)));
                 IOUtils.write(sw.toString(), zip, Constants.UTF8);
                 IOUtils.closeQuietly(sw);
                 zip.closeEntry();
